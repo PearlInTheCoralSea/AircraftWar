@@ -20,6 +20,7 @@ public class StartMenuActivity extends AppCompatActivity {
         Button btnEasy = findViewById(R.id.btn_easy);
         Button btnMedium = findViewById(R.id.btn_medium);
         Button btnHard = findViewById(R.id.btn_hard);
+        Button btnRanking = findViewById(R.id.btn_ranking);
         Switch switchMusic = findViewById(R.id.switch_music);
         TextView tvMusicStatus = findViewById(R.id.tv_music_status);
 
@@ -32,6 +33,12 @@ public class StartMenuActivity extends AppCompatActivity {
         btnEasy.setOnClickListener(v -> startGame("easy"));
         btnMedium.setOnClickListener(v -> startGame("medium"));
         btnHard.setOnClickListener(v -> startGame("hard"));
+
+        btnRanking.setOnClickListener(v -> {
+            Intent intent = new Intent(this, RankingActivity.class);
+            intent.putExtra("difficulty", "easy");
+            startActivity(intent);
+        });
     }
 
     private void startGame(String difficulty) {

@@ -69,7 +69,7 @@ public abstract class AbstractGame extends SurfaceView implements SurfaceHolder.
 
     // 周期计时（帧数）
     protected int enemyCycleFrames = 38;       // ~600ms
-    protected int heroBulletCycleFrames = 8;   // ~120ms
+    protected int heroBulletCycleFrames = 20;  // ~320ms
     protected int enemyBulletCycleFrames = 38; // ~600ms
     private int enemyCycleCount = 0;
     private int heroBulletCycleCount = 0;
@@ -85,6 +85,7 @@ public abstract class AbstractGame extends SurfaceView implements SurfaceHolder.
     protected int generateBossThreshold;
     protected int bossHp;
     protected String difficulty;
+    protected String difficultyKey;
 
     // 子弹道具计时
     private int bulletPropFrameCount = 0;
@@ -98,6 +99,7 @@ public abstract class AbstractGame extends SurfaceView implements SurfaceHolder.
 
     // 游戏结束回调
     private GameOverCallback gameOverCallback;
+    private boolean gameOverNotified = false;
 
     public interface GameOverCallback {
         void onGameOver(int score);
@@ -105,6 +107,14 @@ public abstract class AbstractGame extends SurfaceView implements SurfaceHolder.
 
     public void setGameOverCallback(GameOverCallback callback) {
         this.gameOverCallback = callback;
+    }
+
+    public String getDifficultyKey() {
+        return difficultyKey;
+    }
+
+    public int getScore() {
+        return score;
     }
 
     public AbstractGame(Context context, boolean isMusic) {
@@ -290,7 +300,8 @@ public abstract class AbstractGame extends SurfaceView implements SurfaceHolder.
             audioSystem.stopBGM();
             audioSystem.stopBossBGM();
             audioSystem.playGameOverSound();
-            if (gameOverCallback != null) {
+            if (gameOverCallback != null && !gameOverNotified) {
+                gameOverNotified = true;
                 mainHandler.post(() -> gameOverCallback.onGameOver(score));
             }
         }
@@ -412,12 +423,12 @@ public abstract class AbstractGame extends SurfaceView implements SurfaceHolder.
             }
         }
 
-        // 敌机 vs 英雄（撞机）
+        // 敌机 vs 英雄（撞机 - 直接死亡）
         for (Aircraft enemy : enemyAircrafts) {
             if (enemy.notValid()) continue;
             if (enemy.crash(heroAircraft)) {
                 enemy.vanish();
-                heroAircraft.decreaseHp(50);
+                heroAircraft.decreaseHp(heroAircraft.getHp());
             }
         }
 
@@ -439,37 +450,51 @@ public abstract class AbstractGame extends SurfaceView implements SurfaceHolder.
                 break;
             case BOMB:
                 audioSystem.playBombSound();
-                // 观察者模式：通知所有敌机和敌方子弹
+                // 清屏普通敌机和精英敌机，Boss扣除一定血量
                 int bombScore = 0;
+                List<Prop> newProps = new ArrayList<>();
                 for (Aircraft enemy : enemyAircrafts) {
                     if (enemy.notValid()) continue;
-                    if (enemy instanceof Observer) {
-                        ((Observer) enemy).update(true);
-                        if (enemy.isDestroyed()) {
-                            bombScore += enemy.getScoreAward();
-                            // 被炸毁的敌机掉落道具
-                            if (!(enemy instanceof BossEnemy) && Math.random() < 0.5) {
-                                generateProp(enemy.getLocationX(), enemy.getLocationY());
+                    if (enemy instanceof BossEnemy) {
+                        // Boss扣除当前血量的30%
+                        enemy.decreaseHp((int) (enemy.getHp() * 0.3));
+                    } else {
+                        // 普通/精英/超级精英敌机直接销毁
+                        bombScore += enemy.getScoreAward();
+                        enemy.vanish();
+                        if (Math.random() < 0.5) {
+                            int rand = random.nextInt(4);
+                            Prop newProp = null;
+                            switch (rand) {
+                                case 0: newProp = propFactory.createBloodProp(enemy.getLocationX(), enemy.getLocationY()); break;
+                                case 1: newProp = propFactory.createBombProp(enemy.getLocationX(), enemy.getLocationY()); break;
+                                case 2: newProp = propFactory.createBulletProp(enemy.getLocationX(), enemy.getLocationY()); break;
+                                case 3: newProp = propFactory.createSuperBulletProp(enemy.getLocationX(), enemy.getLocationY()); break;
                             }
+                            if (newProp != null) newProps.add(newProp);
                         }
                     }
                 }
+                // 清空所有敌方子弹
                 for (Bullet bullet : enemyBullets) {
-                    if (bullet.notValid()) continue;
-                    ((Observer) bullet).update(true);
+                    if (!bullet.notValid()) {
+                        bullet.vanish();
+                    }
                 }
                 score += bombScore;
                 generateBossScore += bombScore;
+                // 延迟添加新道具，避免并发修改
+                props.addAll(newProps);
                 break;
             case BULLET:
                 heroAircraft.setShootStrategy(new ScatterShootStrategy());
-                heroAircraft.setShootNum(heroAircraft.getShootNum() + 2);
+                heroAircraft.setShootNum(3);
                 bulletPropActive = true;
                 bulletPropFrameCount = 0;
                 break;
             case SUPER_BULLET:
                 heroAircraft.setShootStrategy(new CircleShootStrategy());
-                heroAircraft.setShootNum(heroAircraft.getShootNum() + 7);
+                heroAircraft.setShootNum(20);
                 bulletPropActive = true;
                 bulletPropFrameCount = 0;
                 break;
@@ -628,12 +653,7 @@ public abstract class AbstractGame extends SurfaceView implements SurfaceHolder.
     public boolean onTouchEvent(MotionEvent event) {
         synchronized (gameLock) {
             if (gameOver) {
-                if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                    // 返回菜单
-                    if (gameOverCallback != null) {
-                        mainHandler.post(() -> gameOverCallback.onGameOver(score));
-                    }
-                }
+                // 游戏结束后不再响应触摸
                 return true;
             }
 

@@ -14,6 +14,7 @@ public class HardGame extends AbstractGame {
         rateBetweenMobAndElite = 0.3;
         rateBetweenEliteAndSuperElite = 0.6;
         difficulty = "困难";
+        difficultyKey = "hard";
     }
 
     @Override

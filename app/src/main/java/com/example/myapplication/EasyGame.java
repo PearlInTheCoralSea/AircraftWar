@@ -14,6 +14,7 @@ public class EasyGame extends AbstractGame {
         rateBetweenMobAndElite = 0.7;
         rateBetweenEliteAndSuperElite = 0.9;
         difficulty = "简单";
+        difficultyKey = "easy";
     }
 
     @Override

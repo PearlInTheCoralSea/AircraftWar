@@ -65,6 +65,17 @@
         android:textSize="20sp"
         android:textColor="#FFFFFFFF"
         android:backgroundTint="#FFF44336"
+        android:layout_marginBottom="16dp" />
+
+    <!-- 排行榜按钮 -->
+    <Button
+        android:id="@+id/btn_ranking"
+        android:layout_width="240dp"
+        android:layout_height="56dp"
+        android:text="排 行 榜"
+        android:textSize="20sp"
+        android:textColor="#FFFFFFFF"
+        android:backgroundTint="#FF9C27B0"
         android:layout_marginBottom="40dp" />
 
     <!-- 音效开关 -->
