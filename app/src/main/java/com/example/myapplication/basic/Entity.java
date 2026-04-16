@@ -11,13 +11,23 @@ public abstract class Entity {
     protected int speedY;
     // 碰撞框
     protected Rect rectangle;
-    
+    // 有效标志
+    protected boolean isValid = true;
+
     public Entity(int locationX, int locationY, int speedX, int speedY) {
         this.locationX = locationX;
         this.locationY = locationY;
         this.speedX = speedX;
         this.speedY = speedY;
         this.rectangle = new Rect();
+    }
+
+    public void vanish() {
+        isValid = false;
+    }
+
+    public boolean notValid() {
+        return !isValid;
     }
     
     /**
@@ -31,7 +41,7 @@ public abstract class Entity {
      * @return 是否碰撞
      */
     public boolean crash(Entity other) {
-        return this.rectangle.intersect(other.rectangle);
+        return Rect.intersects(this.rectangle, other.rectangle);
     }
     
     /**

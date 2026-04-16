@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:background="#FF1A1A2E"
+    android:padding="32dp">
+
+    <!-- 标题 -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="飞机大战"
+        android:textSize="48sp"
+        android:textColor="#FFFFFFFF"
+        android:textStyle="bold"
+        android:layout_marginBottom="16dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Aircraft War"
+        android:textSize="20sp"
+        android:textColor="#AAFFFFFF"
+        android:layout_marginBottom="60dp" />
+
+    <!-- 难度选择标题 -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="选择难度"
+        android:textSize="22sp"
+        android:textColor="#FFFFFFFF"
+        android:layout_marginBottom="20dp" />
+
+    <!-- 简单按钮 -->
+    <Button
+        android:id="@+id/btn_easy"
+        android:layout_width="240dp"
+        android:layout_height="56dp"
+        android:text="简 单"
+        android:textSize="20sp"
+        android:textColor="#FFFFFFFF"
+        android:backgroundTint="#FF4CAF50"
+        android:layout_marginBottom="16dp" />
+
+    <!-- 普通按钮 -->
+    <Button
+        android:id="@+id/btn_medium"
+        android:layout_width="240dp"
+        android:layout_height="56dp"
+        android:text="普 通"
+        android:textSize="20sp"
+        android:textColor="#FFFFFFFF"
+        android:backgroundTint="#FFFF9800"
+        android:layout_marginBottom="16dp" />
+
+    <!-- 困难按钮 -->
+    <Button
+        android:id="@+id/btn_hard"
+        android:layout_width="240dp"
+        android:layout_height="56dp"
+        android:text="困 难"
+        android:textSize="20sp"
+        android:textColor="#FFFFFFFF"
+        android:backgroundTint="#FFF44336"
+        android:layout_marginBottom="40dp" />
+
+    <!-- 音效开关 -->
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="音效"
+            android:textSize="18sp"
+            android:textColor="#FFFFFFFF"
+            android:layout_marginEnd="12dp" />
+
+        <Switch
+            android:id="@+id/switch_music"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checked="true"
+            android:thumbTint="#FF4CAF50"
+            android:trackTint="#66FFFFFF" />
+
+        <TextView
+            android:id="@+id/tv_music_status"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="开"
+            android:textSize="18sp"
+            android:textColor="#FF4CAF50"
+            android:layout_marginStart="8dp" />
+    </LinearLayout>
+
+</LinearLayout>

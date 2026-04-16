@@ -39,6 +39,10 @@ public class ImageManager {
         }
         return instance;
     }
+
+    public static ImageManager getInstance() {
+        return instance;
+    }
     
     // 预加载所有游戏图片
     private void preloadImages() {

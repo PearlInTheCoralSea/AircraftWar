@@ -1,5 +1,6 @@
 package com.example.myapplication;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -9,7 +10,9 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        BaseGame gameView = new BaseGame(this);
-        setContentView(gameView);
+        // 重定向到开始菜单
+        Intent intent = new Intent(this, StartMenuActivity.class);
+        startActivity(intent);
+        finish();
     }
 }
